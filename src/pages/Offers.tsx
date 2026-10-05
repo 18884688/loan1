@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { INTEREST, isSafaricom, ksh, load, save, TERM_DAYS, TIERS, maxLoan } from '../lib'
 
-type Step = 'select' | 'confirm' | 'pay' | 'waiting' | 'success'
+type Step = 'select' | 'confirm' | 'pay' | 'waiting' | 'success' | 'failed'
+
+// Backend API URL - uses Vercel serverless function
+const API_URL = import.meta.env.VITE_API_URL || '/api/mpesa'
 
 export default function Offers() {
   const nav = useNavigate()
@@ -11,6 +14,8 @@ export default function Offers() {
   const [step, setStep] = useState<Step>('select')
   const [phone, setPhone] = useState(applicant?.phone ?? '')
   const [error, setError] = useState('')
+  const [, setCheckoutId] = useState('')
+  const [receipt, setReceipt] = useState('')
 
   if (!applicant) return <Navigate to="/eligibility" replace />
 
@@ -22,7 +27,7 @@ export default function Offers() {
     setError('')
   }
 
-  const sendStkForFee = () => {
+  const sendStkForFee = async () => {
     if (!isSafaricom(phone)) {
       setError('Enter a valid Safaricom number, e.g. 0712 345 678.')
       return
@@ -30,16 +35,97 @@ export default function Offers() {
     setError('')
     setStep('waiting')
 
-    // STK push for fee payment, then disburse loan
-    setTimeout(() => {
-      const [amount, fee] = pick!
-      save({ loan: { amount, fee, ref: `MKP-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, date: new Date().toISOString() } })
-      setStep('success')
-    }, 4000)
+    const [amount, fee] = pick!
+    const reference = `MKP-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+
+    try {
+      const res = await fetch(`${API_URL}?action=initiate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone,
+          amount: fee, // Pay the processing fee first
+          reference,
+          meta: { loan_amount: amount, fee, applicant_name: applicant.name }
+        })
+      })
+
+      const data = await res.json()
+
+      if (!data.ok) {
+        setError(data.error || 'Failed to initiate payment')
+        setStep('pay')
+        return
+      }
+
+      setCheckoutId(data.checkout_id)
+      // Start polling for payment status
+      pollPaymentStatus(data.checkout_id, amount, fee, reference)
+
+    } catch (err) {
+      setError('Network error. Please try again.')
+      setStep('pay')
+    }
+  }
+
+  const pollPaymentStatus = async (checkoutId: string, loanAmount: number, fee: number, reference: string) => {
+    let attempts = 0
+    const maxAttempts = 60 // Poll for up to 2 minutes
+
+    const poll = async () => {
+      attempts++
+
+      try {
+        const res = await fetch(`${API_URL}?action=status&checkout_id=${checkoutId}`)
+        const data = await res.json()
+
+        if (data.status === 'paid') {
+          // Fee paid successfully - save loan and show success
+          setReceipt(data.receipt || '')
+          save({
+            loan: {
+              amount: loanAmount,
+              fee,
+              ref: reference,
+              date: new Date().toISOString(),
+              feeReceipt: data.receipt
+            }
+          })
+          setStep('success')
+          return
+        }
+
+        if (data.status === 'failed') {
+          setError(data.message || 'Payment was cancelled or failed')
+          setStep('failed')
+          return
+        }
+
+        // Still pending, continue polling
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 2000)
+        } else {
+          setError('Payment timed out. If you paid, please contact support.')
+          setStep('failed')
+        }
+      } catch {
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 2000)
+        }
+      }
+    }
+
+    setTimeout(poll, 3000) // Start polling after 3 seconds
   }
 
   const goToDashboard = () => {
     nav('/dashboard')
+  }
+
+  const retry = () => {
+    setStep('pay')
+    setError('')
+    setCheckoutId('')
   }
 
   return (
@@ -121,7 +207,7 @@ export default function Offers() {
               <p className="mt-1">Pay {ksh(pick[1])} to MKOPO HELA for loan processing fee?</p>
               <p className="mt-1 text-slate-400">Enter M-PESA PIN on your phone</p>
             </div>
-            <p className="text-xs text-muted">You will receive an M-Pesa prompt on your phone. Never enter your PIN on a website.</p>
+            <p className="text-xs text-muted">Enter your M-Pesa PIN on your phone to complete payment.</p>
           </div>
         </div>
       )}
@@ -131,14 +217,33 @@ export default function Offers() {
         <div className="fixed inset-0 z-10 grid place-items-center bg-black/50 p-4">
           <div className="card w-full max-w-sm space-y-4 py-6 text-center">
             <div className="mx-auto grid size-14 place-items-center rounded-full bg-primary text-3xl text-white">✓</div>
-            <h3 className="text-xl font-semibold">Loan Disbursed!</h3>
+            <h3 className="text-xl font-semibold">Payment Received!</h3>
             <p className="text-muted">
-              <b>{ksh(pick[0])}</b> has been sent to <b>{phone}</b>
+              Fee of <b>{ksh(pick[1])}</b> paid successfully.
+            </p>
+            {receipt && <p className="text-xs text-muted">Receipt: {receipt}</p>}
+            <p className="text-sm">
+              <b>{ksh(pick[0])}</b> is being sent to <b>{phone}</b>
             </p>
             <p className="text-sm text-muted">
               Total repayment: {ksh(Math.round(pick[0] * (1 + INTEREST)))} due in {TERM_DAYS} days
             </p>
             <button className="btn" onClick={goToDashboard}>Go to Dashboard</button>
+          </div>
+        </div>
+      )}
+
+      {/* Failed */}
+      {pick && step === 'failed' && (
+        <div className="fixed inset-0 z-10 grid place-items-center bg-black/50 p-4">
+          <div className="card w-full max-w-sm space-y-4 py-6 text-center">
+            <div className="mx-auto grid size-14 place-items-center rounded-full bg-red-500 text-3xl text-white">✗</div>
+            <h3 className="text-xl font-semibold">Payment Failed</h3>
+            <p className="text-sm text-muted">{error || 'The payment was not completed.'}</p>
+            <div className="flex gap-2">
+              <button className="w-full rounded-xl border py-3 font-medium" onClick={() => setStep('select')}>Cancel</button>
+              <button className="btn" onClick={retry}>Try Again</button>
+            </div>
           </div>
         </div>
       )}

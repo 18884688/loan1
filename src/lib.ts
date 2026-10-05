@@ -15,7 +15,7 @@ export const isNationalId = (id: string) => /^\d{7,8}$/.test(id)
 export const ksh = (n: number) => `Ksh ${Math.round(n).toLocaleString()}`
 
 export type Applicant = { name: string; phone: string; idNumber: string; loanType: string; income?: number }
-export type Loan = { amount: number; fee: number; ref: string; date: string; paid?: number }
+export type Loan = { amount: number; fee: number; ref: string; date: string; paid?: number; feeReceipt?: string }
 type State = { applicant?: Applicant; loan?: Loan }
 
 // ponytail: localStorage only — swap for Supabase when backend is ready
