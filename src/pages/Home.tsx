@@ -97,7 +97,7 @@ export default function Home() {
       </div>
 
       {/* Trust Section */}
-      <section className="rounded-2xl bg-primary/5 p-6">
+      <section className="rounded-2xl bg-white p-6 shadow-lg border border-slate-100">
         <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-primary">
           Trusted By Leading Institutions
         </h3>
