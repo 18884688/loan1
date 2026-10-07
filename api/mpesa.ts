@@ -27,23 +27,34 @@ const formatPhone = (raw: string): string | null => {
   return /^254[17]\d{8}$/.test(d) ? d : null
 }
 
-async function getToken(): Promise<string | null> {
+async function getToken(): Promise<{ token: string } | { error: string }> {
+  if (!MPESA.consumerKey || !MPESA.consumerSecret) {
+    return { error: 'Missing MPESA_CONSUMER_KEY or MPESA_CONSUMER_SECRET in environment' }
+  }
   const auth = Buffer.from(`${MPESA.consumerKey}:${MPESA.consumerSecret}`).toString('base64')
   const res = await fetch(`${host()}/oauth/v1/generate?grant_type=client_credentials`, {
     headers: { Authorization: `Basic ${auth}` }
   })
-  if (!res.ok) return null
   const data = await res.json()
-  return data.access_token || null
+  if (!res.ok || !data.access_token) {
+    return { error: data.errorMessage || data.error_description || `Auth failed: HTTP ${res.status}` }
+  }
+  return { token: data.access_token }
 }
 
 async function stkPush(phone: string, amount: number, reference: string, meta: Record<string, unknown> = {}) {
+  // Check required env vars
+  const missing = ['consumerKey', 'consumerSecret', 'shortcode', 'passkey', 'till', 'callbackUrl']
+    .filter(k => !MPESA[k as keyof typeof MPESA])
+  if (missing.length) return { ok: false, error: `Missing env: ${missing.map(k => 'MPESA_' + k.replace(/([A-Z])/g, '_$1').toUpperCase()).join(', ')}` }
+
   const msisdn = formatPhone(phone)
   if (!msisdn) return { ok: false, error: 'Invalid phone number' }
   if (amount < 1) return { ok: false, error: 'Amount must be at least 1' }
 
-  const token = await getToken()
-  if (!token) return { ok: false, error: 'Could not connect to M-Pesa' }
+  const auth = await getToken()
+  if ('error' in auth) return { ok: false, error: auth.error }
+  const token = auth.token
 
   const timestamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14)
   const password = Buffer.from(`${MPESA.shortcode}${MPESA.passkey}${timestamp}`).toString('base64')
@@ -76,14 +87,9 @@ async function stkPush(phone: string, amount: number, reference: string, meta: R
   const data = await res.json()
 
   if (!res.ok || data.ResponseCode !== '0' || !data.CheckoutRequestID) {
-    const why = data.errorMessage || data.ResponseDescription || `HTTP ${res.status}`
-    return {
-      ok: false,
-      error: why.toLowerCase().includes('insufficient') ? 'Not enough money in M-Pesa account.'
-           : why.toLowerCase().includes('in process') ? 'You have a pending payment. Complete it first.'
-           : why.toLowerCase().includes('subscriber') ? 'That number is not registered for M-Pesa.'
-           : 'M-Pesa could not process. Try again.'
-    }
+    const why = data.errorMessage || data.ResponseDescription || data.errorCode || `HTTP ${res.status}`
+    // ponytail: show raw error for debugging, prettify later if needed
+    return { ok: false, error: why }
   }
 
   return {
@@ -94,8 +100,9 @@ async function stkPush(phone: string, amount: number, reference: string, meta: R
 }
 
 async function queryStatus(checkoutId: string) {
-  const token = await getToken()
-  if (!token) return { ok: false, error: 'Could not connect to M-Pesa' }
+  const auth = await getToken()
+  if ('error' in auth) return { ok: false, error: auth.error }
+  const token = auth.token
 
   const timestamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14)
   const password = Buffer.from(`${MPESA.shortcode}${MPESA.passkey}${timestamp}`).toString('base64')
