@@ -14,9 +14,9 @@ export default function App() {
       <header className="sticky top-0 z-40 glass border-b border-slate-200/50">
         <div className="mx-auto flex max-w-[520px] items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/logo.jpg" alt="Meta Instant Loan" className="size-12 rounded-xl shadow-lg" />
+            <img src="/logo.jpg" alt="Meta Radius Loan" className="size-12 rounded-xl shadow-lg" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight text-primary">META INSTANT</span>
+              <span className="text-lg font-bold tracking-tight text-primary">META RADIUS</span>
               <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">Digital Banking</span>
             </div>
           </Link>
@@ -77,7 +77,7 @@ export default function App() {
           </div>
 
           <p className="text-center text-[10px] text-muted/70">
-            © 2026 Meta Instant Loan Ltd. All rights reserved.<br/>
+            © 2026 Meta Radius Loan Ltd. All rights reserved.<br/>
             Regulated by Central Bank of Kenya | License No. MBL/2024/001
           </p>
         </div>
