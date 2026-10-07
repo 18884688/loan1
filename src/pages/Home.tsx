@@ -101,10 +101,9 @@ export default function Home() {
         <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-primary">
           Trusted By Leading Institutions
         </h3>
-        <div className="flex items-center justify-center gap-8 opacity-60">
-          <span className="text-xl font-bold text-slate-400">SAFARICOM</span>
-          <span className="text-xl font-bold text-slate-400">CBK</span>
-          <span className="text-xl font-bold text-slate-400">KBA</span>
+        <div className="flex items-center justify-center gap-6">
+          <img src="/safaricom.png" alt="Safaricom" className="h-8 object-contain" />
+          <img src="/cbk.jpg" alt="Central Bank of Kenya" className="h-10 object-contain" />
         </div>
       </section>
 
