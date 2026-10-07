@@ -3,10 +3,12 @@ import Home from './pages/Home'
 import Eligibility from './pages/Eligibility'
 import Offers from './pages/Offers'
 import Dashboard from './pages/Dashboard'
+import SocialProof from './components/SocialProof'
 
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
+      <SocialProof />
       <main className="mx-auto w-full max-w-[480px] flex-1 p-6">
         <header className="mb-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
