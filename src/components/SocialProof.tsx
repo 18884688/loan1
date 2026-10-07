@@ -32,10 +32,14 @@ export default function SocialProof() {
   if (!current || !visible) return null
 
   return (
-    <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2 animate-fade-in">
-      <div className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white shadow-lg">
-        <span className="grid size-6 place-items-center rounded-full bg-white/20 text-xs">✓</span>
-        <span>{current.phone} received <b>Ksh {current.amount.toLocaleString()}</b></span>
+    <div className="fixed top-20 left-1/2 z-50 -translate-x-1/2 animate-fade-in">
+      <div className="flex items-center gap-3 rounded-full bg-white px-5 py-3 shadow-2xl shadow-slate-300/50 border border-slate-100">
+        <span className="grid size-8 place-items-center rounded-full bg-green-500 text-sm text-white">✓</span>
+        <div className="text-sm">
+          <span className="font-medium text-ink">{current.phone}</span>
+          <span className="text-muted"> received </span>
+          <span className="font-bold text-green-600">Ksh {current.amount.toLocaleString()}</span>
+        </div>
       </div>
     </div>
   )

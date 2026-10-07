@@ -24,57 +24,80 @@ export default function Eligibility() {
   }
 
   return (
-    <form onSubmit={submit} className="card space-y-4" noValidate>
-      <div className="flex items-center gap-2 text-primary">
-        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-        <h2 className="text-xl font-semibold">Personal Information</h2>
+    <div className="space-y-6">
+      {/* Progress Indicator */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="grid size-8 place-items-center rounded-full bg-primary text-sm font-bold text-white">1</span>
+        <span className="h-0.5 w-8 bg-slate-200" />
+        <span className="grid size-8 place-items-center rounded-full bg-slate-200 text-sm font-bold text-slate-400">2</span>
+        <span className="h-0.5 w-8 bg-slate-200" />
+        <span className="grid size-8 place-items-center rounded-full bg-slate-200 text-sm font-bold text-slate-400">3</span>
       </div>
 
-      <div>
-        <input className="input" value={f.name} onChange={set('name')} maxLength={80} autoComplete="name" placeholder="Full Name" />
-        <p className="mt-1 text-xs text-muted">Enter your full name as on your national ID</p>
-      </div>
-
-      <div>
-        <input className="input" value={f.phone} onChange={set('phone')} maxLength={13} inputMode="tel" placeholder="Phone Number" />
-        <p className="mt-1 text-xs text-muted">Safaricom only — e.g. 0712 345 678 or 0110 123 456</p>
-      </div>
-
-      <div>
-        <input className="input" value={f.idNumber} onChange={set('idNumber')} maxLength={8} inputMode="numeric" placeholder="National ID Number" />
-        <p className="mt-1 text-xs text-muted">7 or 8 digit Kenyan National ID number</p>
-      </div>
-
-      <div>
-        <select className="input" value={f.loanType} onChange={set('loanType')}>
-          <option value="">Select Loan Type</option>
-          {LOAN_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-        <p className="mt-1 text-xs text-muted">Choose the purpose of your loan</p>
-      </div>
-
-      <div className="flex justify-center gap-6 py-2">
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">🔒</span>
-          <span className="text-xs font-medium text-muted">Secure</span>
+      <form onSubmit={submit} className="card space-y-5" noValidate>
+        <div className="border-b border-slate-100 pb-4">
+          <h2 className="text-xl font-bold text-ink">Personal Information</h2>
+          <p className="text-sm text-muted">Fill in your details to check loan eligibility</p>
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">✓</span>
-          <span className="text-xs font-medium text-muted">Licensed</span>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink">Full Name</label>
+          <input className="input" value={f.name} onChange={set('name')} maxLength={80} autoComplete="name" placeholder="John Kamau Mwangi" />
+          <p className="mt-1.5 text-xs text-muted">As it appears on your National ID</p>
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">✗</span>
-          <span className="text-xs font-medium text-muted">No CRB Check</span>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink">M-Pesa Phone Number</label>
+          <input className="input" value={f.phone} onChange={set('phone')} maxLength={13} inputMode="tel" placeholder="0712 345 678" />
+          <p className="mt-1.5 text-xs text-muted">Safaricom number where you'll receive funds</p>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink">National ID Number</label>
+          <input className="input" value={f.idNumber} onChange={set('idNumber')} maxLength={8} inputMode="numeric" placeholder="12345678" />
+          <p className="mt-1.5 text-xs text-muted">7 or 8 digit Kenyan National ID</p>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink">Loan Purpose</label>
+          <select className="input" value={f.loanType} onChange={set('loanType')}>
+            <option value="">Select loan purpose</option>
+            {LOAN_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-100 p-4">
+            <p className="text-sm font-medium text-red-600">{error}</p>
+          </div>
+        )}
+
+        <button className="btn text-primary font-bold" disabled={checking}>
+          {checking ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="size-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+              Verifying...
+            </span>
+          ) : (
+            'Continue to Loan Offers'
+          )}
+        </button>
+      </form>
+
+      {/* Security Notice */}
+      <div className="rounded-2xl bg-primary/5 p-4">
+        <div className="flex items-start gap-3">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-lg">🔐</span>
+          <div>
+            <p className="font-semibold text-ink">Your data is secure</p>
+            <p className="text-xs text-muted">256-bit encryption protects your information. We never share your data with third parties.</p>
+          </div>
         </div>
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-
-      <button className="btn" disabled={checking}>
-        {checking ? 'Checking…' : 'Check Eligibility →'}
-      </button>
-
-      <p className="text-center text-xs text-muted">No paperwork required. No guarantors needed.</p>
-    </form>
+      <p className="text-center text-xs text-muted">
+        No paperwork • No guarantors • No CRB check required
+      </p>
+    </div>
   )
 }

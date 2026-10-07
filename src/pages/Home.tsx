@@ -1,54 +1,117 @@
 import { useNavigate } from 'react-router-dom'
 
-const features = [
-  ['Quick Approval', 'Get pre-approved in minutes with our streamlined digital process.'],
-  ['Flexible Terms', 'Choose loan terms from 30 to 90 days that fit your budget.'],
-  ['No Hidden Fees', 'Transparent pricing with no surprises. Know exactly what you\'ll pay.'],
-]
-
 export default function Home() {
   const nav = useNavigate()
+
   return (
-    <div className="space-y-6">
-      <section className="card bg-gradient-to-br from-primary to-primary-dark text-white">
-        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">★ Special Offer</span>
-        <h1 className="mt-4 text-3xl font-bold">Get Up To Ksh 100,000</h1>
-        <p className="mt-1 text-white/90">Low 7.5% interest rate for qualified borrowers</p>
-        <ol className="mt-6 flex justify-between text-sm">
-          {['Apply', 'Approve', 'Receive'].map((s, i) => (
-            <li key={s} className="flex flex-col items-center gap-1">
-              <span className="grid size-8 place-items-center rounded-full bg-white font-bold text-primary-dark">{i + 1}</span>
-              {s}
-            </li>
-          ))}
-        </ol>
+    <div className="space-y-8">
+      {/* Hero Card */}
+      <section className="card-dark relative overflow-hidden">
+        <div className="absolute inset-0 shimmer pointer-events-none" />
+        <div className="relative">
+          <div className="mb-6 flex items-center gap-2">
+            <span className="badge bg-accent/20 text-accent">
+              <span className="size-1.5 rounded-full bg-accent animate-pulse" />
+              Limited Offer
+            </span>
+            <span className="badge bg-white/10 text-white/80">
+              7.5% APR
+            </span>
+          </div>
+
+          <h1 className="text-4xl font-extrabold tracking-tight">
+            Up to <span className="text-accent">Ksh 100,000</span>
+          </h1>
+          <p className="mt-2 text-lg text-white/70">
+            Instant approval. Funds in minutes.
+          </p>
+
+          {/* Stats */}
+          <div className="mt-8 grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
+            <div>
+              <p className="text-2xl font-bold text-accent">500K+</p>
+              <p className="text-xs text-white/50">Active Users</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-accent">2B+</p>
+              <p className="text-xs text-white/50">Disbursed (Ksh)</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-accent">4.9★</p>
+              <p className="text-xs text-white/50">User Rating</p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <button className="btn" onClick={() => nav('/eligibility')}>Apply Now →</button>
+      {/* CTA Button */}
+      <button className="btn text-primary font-bold text-lg" onClick={() => nav('/eligibility')}>
+        Apply Now — Get Instant Decision
+      </button>
 
-      <div className="space-y-3">
-        {features.map(([t, d]) => (
-          <div key={t} className="card">
-            <h3 className="font-semibold">{t}</h3>
-            <p className="text-sm text-muted">{d}</p>
+      {/* Process Steps */}
+      <section className="card">
+        <h2 className="mb-6 text-center text-sm font-semibold uppercase tracking-wider text-muted">
+          How It Works
+        </h2>
+        <div className="flex justify-between">
+          {[
+            { step: '01', title: 'Apply', desc: '2 minutes' },
+            { step: '02', title: 'Approve', desc: 'Instant' },
+            { step: '03', title: 'Receive', desc: 'Via M-Pesa' },
+          ].map((item, i) => (
+            <div key={item.step} className="flex flex-col items-center text-center">
+              <div className="relative mb-3">
+                <span className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary-light text-xl font-bold text-white shadow-lg">
+                  {item.step}
+                </span>
+                {i < 2 && (
+                  <span className="absolute left-full top-1/2 w-8 border-t-2 border-dashed border-slate-200" />
+                )}
+              </div>
+              <p className="font-semibold text-ink">{item.title}</p>
+              <p className="text-xs text-muted">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <div className="grid gap-4">
+        {[
+          { icon: '⚡', title: 'Lightning Fast', desc: 'Get funds deposited to your M-Pesa within 5 minutes of approval.' },
+          { icon: '📊', title: 'Transparent Pricing', desc: 'No hidden fees. Know exactly what you pay before you commit.' },
+          { icon: '🔄', title: 'Flexible Repayment', desc: 'Choose 30, 60, or 90 day terms that fit your cash flow.' },
+          { icon: '🛡️', title: 'Bank-Grade Security', desc: 'Your data is protected with 256-bit encryption.' },
+        ].map(f => (
+          <div key={f.title} className="card flex gap-4">
+            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/5 text-2xl">
+              {f.icon}
+            </span>
+            <div>
+              <h3 className="font-semibold text-ink">{f.title}</h3>
+              <p className="text-sm text-muted">{f.desc}</p>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="flex justify-center gap-6 py-4">
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">🔒</span>
-          <span className="text-xs font-medium text-muted">Secure</span>
+      {/* Trust Section */}
+      <section className="rounded-2xl bg-primary/5 p-6">
+        <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-primary">
+          Trusted By Leading Institutions
+        </h3>
+        <div className="flex items-center justify-center gap-8 opacity-60">
+          <span className="text-xl font-bold text-slate-400">SAFARICOM</span>
+          <span className="text-xl font-bold text-slate-400">CBK</span>
+          <span className="text-xl font-bold text-slate-400">KBA</span>
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">✓</span>
-          <span className="text-xs font-medium text-muted">Licensed</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">✗</span>
-          <span className="text-xs font-medium text-muted">No CRB Check</span>
-        </div>
-      </div>
+      </section>
+
+      {/* Secondary CTA */}
+      <button className="btn-outline" onClick={() => nav('/eligibility')}>
+        Check Your Eligibility
+      </button>
     </div>
   )
 }

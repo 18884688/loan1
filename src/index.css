@@ -1,25 +1,74 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #26c2a3;
-  --color-primary-dark: #18a68c;
-  --color-secondary: #f39c12;
-  --color-ink: #1e293b;
+  --color-primary: #0a2540;
+  --color-primary-light: #1a3a5c;
+  --color-accent: #c9a227;
+  --color-accent-light: #e8c547;
+  --color-ink: #0f172a;
   --color-muted: #64748b;
-  --font-sans: "Poppins", sans-serif;
+  --color-success: #10b981;
+  --font-sans: "Inter", "Poppins", system-ui, sans-serif;
 }
 
 body {
-  @apply min-h-screen text-ink;
-  background: linear-gradient(135deg, #ffffff 0%, #e6fffa 100%);
+  @apply min-h-screen text-ink antialiased;
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.card { @apply rounded-xl bg-white p-5 shadow-md; }
-.btn { @apply w-full rounded-xl bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition hover:brightness-105 disabled:opacity-50; }
-.input { @apply w-full rounded-lg border border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20; }
+.card {
+  @apply rounded-2xl bg-white p-6 shadow-xl shadow-slate-200/50 border border-slate-100;
+}
+
+.card-dark {
+  @apply rounded-2xl p-6 text-white;
+  background: linear-gradient(135deg, #0a2540 0%, #1a3a5c 50%, #0a2540 100%);
+  box-shadow: 0 25px 50px -12px rgba(10, 37, 64, 0.4);
+}
+
+.btn {
+  @apply w-full rounded-xl py-4 font-semibold text-white transition-all duration-200;
+  background: linear-gradient(135deg, #c9a227 0%, #e8c547 50%, #c9a227 100%);
+  box-shadow: 0 10px 40px -10px rgba(201, 162, 39, 0.5);
+}
+.btn:hover { @apply brightness-110 scale-[1.02]; }
+.btn:disabled { @apply opacity-50 cursor-not-allowed scale-100; }
+
+.btn-outline {
+  @apply w-full rounded-xl border-2 border-primary bg-transparent py-4 font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white;
+}
+
+.input {
+  @apply w-full rounded-xl border-2 border-slate-200 bg-slate-50 px-5 py-4 text-ink outline-none transition-all;
+  @apply focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10;
+}
+
+.badge {
+  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+}
+
+.glass {
+  @apply backdrop-blur-xl bg-white/80 border border-white/20;
+}
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translate(-50%, -10px); }
+  from { opacity: 0; transform: translate(-50%, -20px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
-.animate-fade-in { animation: fade-in 0.3s ease-out; }
+.animate-fade-in { animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
