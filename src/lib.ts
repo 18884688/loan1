@@ -19,7 +19,7 @@ export type Loan = { amount: number; fee: number; ref: string; date: string; pai
 type State = { applicant?: Applicant; loan?: Loan }
 
 // ponytail: localStorage only — swap for Supabase when backend is ready
-const KEY = 'mkopo-hela'
+const KEY = 'meta-instant-loan'
 export const load = (): State => {
   try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
 }

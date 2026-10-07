@@ -204,7 +204,7 @@ export default function Offers() {
             <p className="font-medium">Check your phone</p>
             <div className="rounded-xl bg-slate-900 p-4 text-left text-sm text-white">
               <p className="text-xs text-slate-400">M-PESA</p>
-              <p className="mt-1">Pay {ksh(pick[1])} to MKOPO HELA for loan processing fee?</p>
+              <p className="mt-1">Pay {ksh(pick[1])} to META INSTANT LOAN for loan processing fee?</p>
               <p className="mt-1 text-slate-400">Enter M-PESA PIN on your phone</p>
             </div>
             <p className="text-xs text-muted">Enter your M-Pesa PIN on your phone to complete payment.</p>

@@ -11,7 +11,7 @@ export default function App() {
         <header className="mb-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-10 place-items-center rounded-[10px] bg-gradient-to-br from-primary to-secondary text-lg font-bold text-white">M</span>
-            <span className="text-2xl font-bold text-primary">Mkopo Hela</span>
+            <span className="text-2xl font-bold text-primary">Meta Instant Loan</span>
           </Link>
           <Link to="/help" className="text-sm font-medium text-primary hover:underline">Help</Link>
         </header>
@@ -29,7 +29,7 @@ export default function App() {
           <a href="#" className="hover:text-primary">Terms</a>
           <a href="#" className="hover:text-primary">Contact</a>
         </div>
-        © 2025 Mkopo Hela. Licensed by CBK
+        © 2025 Meta Instant Loan. Licensed by CBK
       </footer>
     </div>
   )

@@ -90,7 +90,7 @@ export default function Dashboard() {
                 <p className="font-medium">Check your phone</p>
                 <div className="rounded-xl bg-slate-900 p-4 text-left text-sm text-white">
                   <p className="text-xs text-slate-400">M-PESA</p>
-                  <p className="mt-1">Pay {ksh(Number(amount))} to MKOPO HELA, account {loan.ref}?</p>
+                  <p className="mt-1">Pay {ksh(Number(amount))} to META INSTANT LOAN, account {loan.ref}?</p>
                   <p className="mt-1 text-slate-400">Enter M-PESA PIN on your phone</p>
                 </div>
                 <p className="text-xs text-muted">You will receive an M-Pesa prompt on your phone. Never enter your PIN on a website.</p>
