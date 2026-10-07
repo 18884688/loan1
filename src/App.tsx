@@ -4,10 +4,12 @@ import Eligibility from './pages/Eligibility'
 import Offers from './pages/Offers'
 import Dashboard from './pages/Dashboard'
 import SocialProof from './components/SocialProof'
+import SplashScreen from './components/SplashScreen'
 
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
+      <SplashScreen />
       <SocialProof />
 
       {/* Premium Header */}
