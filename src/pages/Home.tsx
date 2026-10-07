@@ -1,5 +1,29 @@
 import { useNavigate } from 'react-router-dom'
 
+// SVG Icons
+const Icons = {
+  bolt: (
+    <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  ),
+  chart: (
+    <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  ),
+  refresh: (
+    <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>
+  ),
+  shield: (
+    <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  ),
+}
+
 export default function Home() {
   const nav = useNavigate()
 
@@ -79,13 +103,13 @@ export default function Home() {
       {/* Features */}
       <div className="grid gap-4">
         {[
-          { icon: '⚡', title: 'Lightning Fast', desc: 'Get funds deposited to your M-Pesa within 5 minutes of approval.' },
-          { icon: '📊', title: 'Transparent Pricing', desc: 'No hidden fees. Know exactly what you pay before you commit.' },
-          { icon: '🔄', title: 'Flexible Repayment', desc: 'Choose 30, 60, or 90 day terms that fit your cash flow.' },
-          { icon: '🛡️', title: 'Bank-Grade Security', desc: 'Your data is protected with 256-bit encryption.' },
+          { icon: Icons.bolt, title: 'Lightning Fast', desc: 'Get funds deposited to your M-Pesa within 5 minutes of approval.' },
+          { icon: Icons.chart, title: 'Transparent Pricing', desc: 'No hidden fees. Know exactly what you pay before you commit.' },
+          { icon: Icons.refresh, title: 'Flexible Repayment', desc: 'Choose 30, 60, or 90 day terms that fit your cash flow.' },
+          { icon: Icons.shield, title: 'Bank-Grade Security', desc: 'Your data is protected with 256-bit encryption.' },
         ].map(f => (
           <div key={f.title} className="card flex gap-4">
-            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/5 text-2xl">
+            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 text-primary">
               {f.icon}
             </span>
             <div>
