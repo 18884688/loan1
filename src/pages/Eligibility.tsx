@@ -1,15 +1,39 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isNationalId, isSafaricom, save } from '../lib'
 
 const LOAN_TYPES = ['Business Loan', 'Personal Loan', 'Education Loan', 'Medical Loan', 'Emergency Loan']
+
+const VERIFICATION_STEPS = [
+  'Verifying identity...',
+  'Checking M-Pesa history...',
+  'Analyzing credit profile...',
+  'Calculating loan eligibility...',
+  'Preparing personalized offers...',
+]
 
 export default function Eligibility() {
   const nav = useNavigate()
   const [f, setF] = useState({ name: '', phone: '', idNumber: '', loanType: '' })
   const [error, setError] = useState('')
   const [checking, setChecking] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+
+  useEffect(() => {
+    if (!checking) return
+
+    if (currentStep < VERIFICATION_STEPS.length) {
+      const timer = setTimeout(() => {
+        setCurrentStep(s => s + 1)
+      }, 800)
+      return () => clearTimeout(timer)
+    } else {
+      // All steps complete, navigate
+      const timer = setTimeout(() => nav('/offers'), 500)
+      return () => clearTimeout(timer)
+    }
+  }, [checking, currentStep, nav])
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -18,9 +42,9 @@ export default function Eligibility() {
     if (!isNationalId(f.idNumber)) return setError('National ID must be 7 or 8 digits.')
     if (!f.loanType) return setError('Please select a loan type.')
     setError('')
+    setCurrentStep(0)
     setChecking(true)
     save({ applicant: { ...f, name: f.name.trim(), income: 50000 }, loan: undefined })
-    setTimeout(() => nav('/offers'), 1200)
   }
 
   return (
@@ -73,14 +97,7 @@ export default function Eligibility() {
         )}
 
         <button className="btn text-primary font-bold" disabled={checking}>
-          {checking ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="size-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-              Verifying...
-            </span>
-          ) : (
-            'Continue to Loan Offers'
-          )}
+          Continue to Loan Offers
         </button>
       </form>
 
@@ -102,6 +119,50 @@ export default function Eligibility() {
       <p className="text-center text-xs text-muted">
         No paperwork • No guarantors • No CRB check required
       </p>
+
+      {/* Verification Modal */}
+      {checking && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="card w-full max-w-sm py-8">
+            <div className="text-center mb-6">
+              <div className="mx-auto size-16 mb-4 relative">
+                <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+                <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+              </div>
+              <h3 className="text-xl font-bold text-ink">Verifying Details</h3>
+              <p className="text-sm text-muted mt-1">Please wait while we process your information</p>
+            </div>
+
+            <div className="space-y-3 px-2">
+              {VERIFICATION_STEPS.map((step, i) => (
+                <div key={step} className="flex items-center gap-3">
+                  {i < currentStep ? (
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-green-500 text-white">
+                      <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  ) : i === currentStep ? (
+                    <span className="size-6 shrink-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                  ) : (
+                    <span className="size-6 shrink-0 rounded-full border-2 border-slate-200" />
+                  )}
+                  <span className={`text-sm ${i < currentStep ? 'text-green-600 font-medium' : i === currentStep ? 'text-ink font-medium' : 'text-muted'}`}>
+                    {i < currentStep ? step.replace('...', '') : step}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {currentStep >= VERIFICATION_STEPS.length && (
+              <div className="mt-6 text-center">
+                <p className="text-sm font-semibold text-green-600">Verification Complete!</p>
+                <p className="text-xs text-muted">Redirecting to your offers...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
