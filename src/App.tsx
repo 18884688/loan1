@@ -14,12 +14,7 @@ export default function App() {
       <header className="sticky top-0 z-40 glass border-b border-slate-200/50">
         <div className="mx-auto flex max-w-[520px] items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="relative">
-              <span className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-lg font-bold text-white shadow-lg shadow-primary/30">
-                M
-              </span>
-              <span className="absolute -right-1 -top-1 size-3 rounded-full bg-accent animate-pulse" />
-            </div>
+            <img src="/logo.jpg" alt="Meta Instant Loan" className="size-12 rounded-xl shadow-lg" />
             <div className="flex flex-col">
               <span className="text-lg font-bold tracking-tight text-primary">META INSTANT</span>
               <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">Digital Banking</span>
