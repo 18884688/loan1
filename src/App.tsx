@@ -70,7 +70,7 @@ export default function App() {
           </div>
 
           <p className="text-center text-[10px] text-muted/70">
-            © 2025 Meta Instant Loan Ltd. All rights reserved.<br/>
+            © 2026 Meta Instant Loan Ltd. All rights reserved.<br/>
             Regulated by Central Bank of Kenya | License No. MBL/2024/001
           </p>
         </div>
