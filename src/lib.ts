@@ -1,6 +1,5 @@
 // Loan tiers: [amount, processing fee] in Ksh. Fee is deducted at disbursement, never collected upfront.
 export const TIERS: [number, number][] = [
-  [1, 1], // ponytail: test tier, remove for production
   [10000, 200], [15000, 300], [20000, 400], [30000, 600], [40000, 800], [50000, 1000],
   [60000, 1200], [70000, 1400], [80000, 1600], [90000, 1800], [100000, 2000],
 ]
