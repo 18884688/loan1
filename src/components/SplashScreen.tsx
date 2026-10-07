@@ -17,7 +17,14 @@ export default function SplashScreen() {
   if (!visible) return null
 
   return (
-    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-500"
+      style={{
+        backgroundColor: '#000',
+        opacity: fadeOut ? 0 : 1,
+        pointerEvents: fadeOut ? 'none' : 'auto'
+      }}
+    >
       <img
         src="/splash.gif"
         alt="Loading"
