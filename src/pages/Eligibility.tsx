@@ -14,7 +14,7 @@ const VERIFICATION_STEPS = [
 
 export default function Eligibility() {
   const nav = useNavigate()
-  const [f, setF] = useState({ name: '', phone: '', idNumber: '', loanType: '' })
+  const [f, setF] = useState({ name: '', phone: '', idNumber: '', loanType: 'Business Loan' })
   const [error, setError] = useState('')
   const [checking, setChecking] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
